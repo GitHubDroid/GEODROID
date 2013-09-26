@@ -642,6 +642,8 @@ public final class R {
         public static final int installgpsstatus_title=0x7f080113;
         public static final int keep_screen_on=0x7f08016d;
         public static final int keep_screen_on_summary=0x7f08016e;
+        public static final int keep_use_imperial=0x7f080185;
+        public static final int keep_use_imperial_sum=0x7f080186;
         public static final int kmlnonsaved=0x7f0800d8;
         public static final int kmlsaved=0x7f0800d7;
         public static final int labels=0x7f08017c;
@@ -884,6 +886,9 @@ public final class R {
         public static final int start=0x7f08016a;
         public static final int stroke_color=0x7f080000;
         public static final int successfully_imported_bookmarks=0x7f08015b;
+        /**  String for Add map to canvas for sketching on in Options Menu 
+ <string name="add_map">Add Map to Canvas</string> 
+         */
         public static final int take_picture=0x7f0800ca;
         public static final int text_gpson=0x7f08010e;
         public static final int text_logging=0x7f08010d;

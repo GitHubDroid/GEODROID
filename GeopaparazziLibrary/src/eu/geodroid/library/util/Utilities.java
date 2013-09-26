@@ -42,7 +42,11 @@ import eu.geopaparazzi.library.database.GPLog;
  */
 public class Utilities {
     
-    private static double originShift = 2 * Math.PI * 6378137 / 2.0;
+//    private static double originShift = 2 * Math.PI * 6378137 / 2.0;
+	
+	 private static double originShift = 2 * Math.PI * 6378137 / 2.0;
+	 private static final double METER_TO_FEET_CONVERSION_FACTOR = 3.2808399;
+	
 
 
     public static String getUniqueDeviceId( Context context ) {
@@ -542,6 +546,16 @@ public class Utilities {
         StatFs stat = new StatFs(file.getPath());
         long bytes = (long) stat.getBlockSize() * (long) stat.getBlockCount();
         return bytes / (1024.f * 1024.f);
+    }
+    
+    /** 
+     * Convert meters to feet. 
+     * 
+    * @param meters the value in meters to convert to feet.
+    * @return meters converted to feet. 
+    */
+    public static double toFeet( final double meters ) {
+    return meters * METER_TO_FEET_CONVERSION_FACTOR;
     }
 
 }

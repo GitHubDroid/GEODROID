@@ -334,6 +334,9 @@ public final class R {
         public static int sirf_nmea_zda_on=0x7f060079;
         public static int sirf_software_version=0x7f060085;
         public static int stroke_color=0x7f0600cb;
+        /**  String for Add map to canvas for sketching on in Options Menu 
+ <string name="add_map">Add Map to Canvas</string> 
+         */
         public static int take_picture=0x7f0600c1;
         public static int title_activity_nfc_id_reader=0x7f0600c8;
         public static int type_to_filter=0x7f0600a4;

@@ -123,6 +123,7 @@
                     {
                         "key": "title",
                         "value": "",
+                        "islabel": "true",
                         "type": "string",
                         "mandatory": "yes"
                     },
@@ -130,7 +131,7 @@
                         "key": "description",
                         "value": "",
                         "type": "string",
-                        "mandatory": "yes"
+                        "mandatory": "no"
                     }
                 ]
             }
@@ -145,7 +146,6 @@
                     {
                         "key": "some text",
                         "value": "",
-                        "islabel": "true", 
                         "type": "string"
                     }
                 ]

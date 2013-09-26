@@ -13,6 +13,7 @@ import org.mapsforge.core.model.GeoPoint;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -22,6 +23,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
@@ -31,6 +33,7 @@ import eu.geodroid.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.hydrologis.geodroid.maps.overlays.SliderDrawProjection;
+import eu.hydrologis.geodroid.util.Constants;
 import eu.hydrologis.geodroid.R;
 
 public class SliderDrawView extends View {
@@ -50,6 +53,7 @@ public class SliderDrawView extends View {
 
     // private boolean imperial = false;
     // private boolean nautical = false;
+    private boolean doImperial = false;
 
     private float measuredDistance = Float.NaN;
     private String distanceString;
@@ -66,9 +70,14 @@ public class SliderDrawView extends View {
     private float bottom;
     private float top;
     private SliderDrawProjection sliderDrawProjection;
+    
+    private StringBuilder textBuilder = new StringBuilder();
 
     public SliderDrawView( Context context, AttributeSet attrs ) {
         super(context, attrs);
+        
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        doImperial = preferences.getBoolean(Constants.PREFS_KEY_IMPERIAL, false);
 
         measurePaint.setAntiAlias(true);
         measurePaint.setColor(Color.DKGRAY);
@@ -109,8 +118,19 @@ public class SliderDrawView extends View {
             int textHeight = rect.height();
             int x = cWidth / 2 - textWidth / 2;
             canvas.drawText(distanceString, x, upper, measureTextPaint);
-            String distanceText = String.valueOf((int) measuredDistance);
+//            String distanceText = String.valueOf((int) measuredDistance);
             // String distanceText = distanceText((int) measuredDistance, imperial, nautical);
+            
+            textBuilder.setLength(0);
+            if (doImperial) {
+            double distanceInFeet = Utilities.toFeet(measuredDistance);
+            textBuilder.append(String.valueOf((int) distanceInFeet));
+            textBuilder.append(" ft");
+            } else {
+            textBuilder.append(String.valueOf((int) measuredDistance));
+            textBuilder.append(" m");
+            }
+            String distanceText = textBuilder.toString();
             measureTextPaint.getTextBounds(distanceText, 0, distanceText.length(), rect);
             textWidth = rect.width();
             x = cWidth / 2 - textWidth / 2;
