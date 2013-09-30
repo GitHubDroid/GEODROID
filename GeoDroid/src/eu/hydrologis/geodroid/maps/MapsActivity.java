@@ -94,7 +94,7 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gps.GpsLocation;
 import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.gps.GpsManagerListener;
-import eu.geopaparazzi.library.mixare.MixareHandler;
+//import eu.geopaparazzi.library.mixare.MixareHandler;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.sms.SmsData;
 import eu.geopaparazzi.library.sms.SmsUtilities;
@@ -131,6 +131,7 @@ import eu.hydrologis.geodroid.R;
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("unused")
 public class MapsActivity extends MapActivity implements GpsManagerListener, OnTouchListener {
     private final int INSERTCOORD_RETURN_CODE = 666;
     private final int ZOOM_RETURN_CODE = 667;
@@ -142,7 +143,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     private final int MENU_GPSDATA = 1;
     private final int MENU_DATA = 2;
     private final int MENU_SCALE_ID = 4;
-    private final int MENU_MIXARE_ID = 5;
+//    private final int MENU_MIXARE_ID = 5;
     private final int GO_TO = 6;
     private final int CENTER_ON_MAP = 7;
     private final int MENU_COMPASS_ID = 8;
@@ -278,18 +279,21 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             }
         }
 
-       MapScaleBar mapScaleBar = this.mapView.getMapScaleBar();
-       // setting scalebar to support imperial units
-       // mapScaleBar.setImperialUnits(false);
-       // mapScaleBar.setText(TextField.KILOMETER, " km"); //$NON-NLS-1$
-       // mapScaleBar.setText(TextField.METER, " m"); //$NON-NLS-1$
-  boolean doImperial = preferences.getBoolean(Constants.PREFS_KEY_IMPERIAL, false);
-       mapScaleBar.setImperialUnits(doImperial);
-        if (doImperial) {
-           mapScaleBar.setText(TextField.FOOT, " ft"); //$NON-NLS-1$
-           mapScaleBar.setText(TextField.MILE, " mi"); //$NON-NLS-1$
-       }else{
-           mapScaleBar.setText(TextField.KILOMETER, " km"); //$NON-NLS-1$            mapScaleBar.setText(TextField.METER, " m"); //$NON-NLS-1$        }
+        MapScaleBar mapScaleBar = this.mapView.getMapScaleBar();
+//        mapScaleBar.setImperialUnits(false);
+//        mapScaleBar.setText(TextField.KILOMETER, " km"); //$NON-NLS-1$
+//        mapScaleBar.setText(TextField.METER, " m"); //$NON-NLS-1$
+        boolean doImperial = preferences.getBoolean(Constants.PREFS_KEY_IMPERIAL, false);
+               mapScaleBar.setImperialUnits(doImperial);
+               if (doImperial) {
+                   mapScaleBar.setText(TextField.FOOT, " ft"); //$NON-NLS-1$
+                   mapScaleBar.setText(TextField.MILE, " mi"); //$NON-NLS-1$
+               }else{
+                   mapScaleBar.setText(TextField.KILOMETER, " km"); //$NON-NLS-1$
+                   mapScaleBar.setText(TextField.METER, " m"); //$NON-NLS-1$
+               }
+        
+
         if (Debug.D) {
             // boolean drawTileFrames = preferences.getBoolean("drawTileFrames", false);
             // boolean drawTileCoordinates = preferences.getBoolean("drawTileCoordinates", false);
@@ -842,7 +846,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         if (SmsUtilities.hasPhone(this)) {
             menu.add(Menu.NONE, MENU_SENDDATA_ID, 7, R.string.send_data).setIcon(android.R.drawable.ic_menu_send);
         }
-        menu.add(Menu.NONE, MENU_MIXARE_ID, 8, R.string.view_in_mixare).setIcon(R.drawable.icon_datasource);
+//        menu.add(Menu.NONE, MENU_MIXARE_ID, 8, R.string.view_in_mixare).setIcon(R.drawable.icon_datasource);
         return true;
     }
 
@@ -865,21 +869,21 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         case MENU_COMPASS_ID:
             ActionBar.openCompass(this);
             return true;
-        case MENU_MIXARE_ID:
-            MixareHandler mixareHandler = new MixareHandler();
-            if (!mixareHandler.isMixareInstalled(this)) {
-                mixareHandler.installMixareFromMarket(this);
-                return true;
-            }
-            float[] nswe = getMapWorldBounds();
-
-            try {
-                MixareUtilities.runRegionOnMixare(this, nswe[0], nswe[1], nswe[2], nswe[3]);
-                return true;
-            } catch (Exception e1) {
-                e1.printStackTrace();
-                return false;
-            }
+//////        case MENU_MIXARE_ID:
+//////            MixareHandler mixareHandler = new MixareHandler();
+//////            if (!mixareHandler.isMixareInstalled(this)) {
+//////                mixareHandler.installMixareFromMarket(this);
+////                return true;
+////            }
+////            float[] nswe = getMapWorldBounds();
+////
+////            try {
+////                MixareUtilities.runRegionOnMixare(this, nswe[0], nswe[1], nswe[2], nswe[3]);
+////                return true;
+//            } catch (Exception e1) {
+//                e1.printStackTrace();
+//                return false;
+//            }
         case MENU_SENDDATA_ID:
             try {
                 sendData();
