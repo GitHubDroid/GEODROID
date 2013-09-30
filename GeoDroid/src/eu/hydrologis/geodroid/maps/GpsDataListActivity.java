@@ -44,6 +44,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geodroid.library.util.ColorUtilities;
 import eu.geodroid.library.util.LibraryConstants;
 import eu.hydrologis.geodroid.database.DaoGpsLog;
 import eu.hydrologis.geodroid.util.Constants;
@@ -105,7 +106,8 @@ public class GpsDataListActivity extends ListActivity {
                 CheckBox visibleView = (CheckBox) rowView.findViewById(R.id.visible);
 
                 final MapItem item = gpslogItems[position];
-                rowView.setBackgroundColor(Color.parseColor(item.getColor()));
+//                rowView.setBackgroundColor(Color.parseColor(item.getColor()));
+                rowView.setBackgroundColor(ColorUtilities.toColor(item.getColor()));
                 nameView.setText(item.getName());
 
                 visibleView.setChecked(item.isVisible());

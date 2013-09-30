@@ -98,6 +98,7 @@ import eu.geopaparazzi.library.gps.GpsManagerListener;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.sms.SmsData;
 import eu.geopaparazzi.library.sms.SmsUtilities;
+import eu.geodroid.library.util.ColorUtilities;
 import eu.geodroid.library.util.FileUtilities;
 import eu.geodroid.library.util.LibraryConstants;
 import eu.geodroid.library.util.PositionUtilities;
@@ -504,7 +505,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             OvalShape notesShape = new OvalShape();
             Paint notesPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             notesPaint.setStyle(Paint.Style.FILL);
-            notesPaint.setColor(Color.parseColor(colorStr));
+//            notesPaint.setColor(Color.parseColor(colorStr));
+            notesPaint.setColor(ColorUtilities.toColor(colorStr));
             notesPaint.setAlpha((int) opacity);
 
             ShapeDrawable notesShapeDrawable = new ShapeDrawable(notesShape);

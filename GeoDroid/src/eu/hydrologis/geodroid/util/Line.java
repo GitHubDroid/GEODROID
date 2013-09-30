@@ -31,7 +31,7 @@ import eu.geopaparazzi.library.gpx.GpxUtilities;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
 import eu.geodroid.library.util.DynamicDoubleArray;
 import eu.geodroid.library.util.Utilities;
-
+import eu.geodroid.library.util.ColorUtilities;
 /**
  * Represents a line (log or map).
  * 
@@ -157,7 +157,8 @@ public class Line implements KmlRepresenter, GpxRepresenter {
         sB.append("</LineString>\n");
         sB.append("<Style>\n");
         sB.append("<LineStyle>\n");
-        int parsedColor = Color.parseColor(color);
+//        int parsedColor = Color.parseColor(color);
+        int parsedColor = ColorUtilities.toColor(color);
         String hexColor = "#" + Integer.toHexString(parsedColor);
         sB.append("<color>").append(hexColor).append("</color>\n");
         sB.append("<width>").append(width).append("</width>\n");
