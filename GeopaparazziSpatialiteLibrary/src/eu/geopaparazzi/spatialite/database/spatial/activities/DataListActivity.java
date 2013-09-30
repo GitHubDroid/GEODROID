@@ -40,6 +40,7 @@ import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.OrderComparator;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
+import eu.geodroid.library.util.ColorUtilities;
 
 /**
  * Data listing activity.
@@ -151,6 +152,7 @@ public class DataListActivity extends ListActivity {
                 });
 
                 // rowView.setBackgroundColor(Color.parseColor(item.getColor()));
+                // rowView.setBackgroundColor(ColorUtilities.toColor(item.getColor()));
                 nameView.setText(item.getName());
 
                 visibleView.setChecked(item.getStyle().enabled != 0);

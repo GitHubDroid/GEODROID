@@ -29,6 +29,7 @@ import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.sketch.brush.Brush;
 import eu.geopaparazzi.library.sketch.brush.PenBrush;
 import eu.geopaparazzi.library.sketch.commands.DrawingPath;
+import eu.geodroid.library.util.ColorUtilities;
 
 /**
  * Main drawing activity.
@@ -320,7 +321,8 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
     private void checkColor() {
         Object selectedItem = colorSpinner.getSelectedItem();
         String newColorStr = selectedItem.toString();
-        currentColor = Color.parseColor(newColorStr.trim());
+//        currentColor = Color.parseColor(newColorStr.trim());
+        currentColor = ColorUtilities.toColor(newColorStr.trim());
     }
 
 }
