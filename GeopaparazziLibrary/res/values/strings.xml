@@ -83,5 +83,6 @@
     <string name="point_size">Point size</string>
     <string name="decimation">Decimation</string>
     <string name="no_data">No data available</string>
+    <string name="add_map">Add Map</string>
 
 </resources>

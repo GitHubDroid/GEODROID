@@ -127,6 +127,7 @@ public final class R {
 	}
 	public static final class string {
 		public static final int activate_nfc = 0x7f0700c9;
+		public static final int add_map = 0x7f0700d4;
 		public static final int alpha = 0x7f0700cd;
 		public static final int approaching_poi = 0x7f0700ad;
 		public static final int askcoord = 0x7f07009e;

@@ -172,6 +172,7 @@ public final class R {
     }
     public static final class string {
         public static int activate_nfc=0x7f0600c9;
+        public static int add_map=0x7f0600d4;
         public static int alpha=0x7f0600cd;
         public static int approaching_poi=0x7f0600ad;
         public static int askcoord=0x7f06009e;
@@ -183,7 +184,7 @@ public final class R {
         public static int connection_problem_notification_title=0x7f06004f;
         public static int couldnt_find_geocache_results=0x7f0600be;
         public static int decimation=0x7f0600d2;
-        public static int decimation_factor_default=0x7f0600d4;
+        public static int decimation_factor_default=0x7f0600d5;
         public static int defaultConnectionRetries=0x7f060069;
         public static int defaultMockGpsName=0x7f06006c;
         public static int defaultTrackFileDirectory=0x7f06006a;
