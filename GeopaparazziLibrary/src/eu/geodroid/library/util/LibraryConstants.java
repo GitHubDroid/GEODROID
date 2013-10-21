@@ -150,6 +150,9 @@ public interface LibraryConstants {
     /**
      * Name for a general temporary image. 
      */
+    
+    //Temporary image to pull for map to canvas sketch work]
+    
     public static final String TMPPNGIMAGENAME = "tmp.png"; //$NON-NLS-1$
 
     /**

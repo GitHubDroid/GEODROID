@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -35,7 +37,8 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
     private CommandManager commandManager;
 
     private volatile boolean isDisposed = false;
-
+    
+      
     public DrawingSurface( Context context, AttributeSet attrs ) {
         super(context, attrs);
 
@@ -44,9 +47,15 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
 
         commandManager = new CommandManager();
         thread = new DrawThread(getHolder());
+        
+       
+      
+       
     }
 
-    private static Handler previewDoneHandler = new Handler(){
+    
+
+	private static Handler previewDoneHandler = new Handler(){
         @Override
         public void handleMessage( Message msg ) {
             isDrawing = false;
@@ -85,7 +94,8 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
                         final Canvas c = new Canvas(mBitmap);
 
                         c.drawColor(Color.WHITE);
-                        // c.drawColor(0, PorterDuff.Mode.CLEAR);
+                      
+                  // c.drawColor(0, PorterDuff.Mode.CLEAR);
                         if (canvas == null || mBitmap.isRecycled()) {
                             break;
                         }

@@ -37,13 +37,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SlidingDrawer;
 import android.widget.Toast;
-import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
-import eu.geopaparazzi.library.gps.GpsLocation;
-import eu.geopaparazzi.library.gps.GpsManager;
-import eu.geopaparazzi.library.sensors.SensorsManager;
-import eu.geopaparazzi.library.sms.SmsData;
-import eu.geopaparazzi.library.sms.SmsUtilities;
 import eu.geodroid.library.util.FileUtilities;
 import eu.geodroid.library.util.LibraryConstants;
 import eu.geodroid.library.util.PositionUtilities;
@@ -51,6 +44,13 @@ import eu.geodroid.library.util.ResourcesManager;
 import eu.geodroid.library.util.Utilities;
 import eu.geodroid.library.util.activities.AboutActivity;
 import eu.geodroid.library.util.activities.DirectoryBrowserActivity;
+import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
+import eu.geopaparazzi.library.gps.GpsLocation;
+import eu.geopaparazzi.library.gps.GpsManager;
+import eu.geopaparazzi.library.sensors.SensorsManager;
+import eu.geopaparazzi.library.sms.SmsData;
+import eu.geopaparazzi.library.sms.SmsUtilities;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
 import eu.hydrologis.geodroid.dashboard.ActionBar;
@@ -70,11 +70,10 @@ import eu.hydrologis.geodroid.osm.OsmUtilities;
 import eu.hydrologis.geodroid.preferences.PreferencesActivity;
 import eu.hydrologis.geodroid.util.Constants;
 import eu.hydrologis.geodroid.util.ExportActivity;
-import eu.hydrologis.geodroid.util.GpUtilities;
 import eu.hydrologis.geodroid.util.ImportActivity;
 import eu.hydrologis.geodroid.util.QuickActionsFactory;
 import eu.hydrologis.geodroid.util.SecretActivity;
-import eu.hydrologis.geodroid.R;
+
 
 public class GeoPaparazziActivity extends Activity {
 

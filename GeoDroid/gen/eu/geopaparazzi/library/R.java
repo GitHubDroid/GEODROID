@@ -39,34 +39,35 @@ public final class R {
 		public static final int main_text_color_neutral = 0x7f090004;
 	}
 	public static final class drawable {
-		public static final int border_black_1px = 0x7f02000e;
-		public static final int current_position = 0x7f020012;
-		public static final int form_text_color = 0x7f020020;
-		public static final int goto_position = 0x7f020021;
-		public static final int ic_launcher_bluegps = 0x7f020026;
-		public static final int ic_stat_notify = 0x7f02002e;
-		public static final int package_download = 0x7f020045;
+		public static final int border_black_1px = 0x7f02000f;
+		public static final int current_position = 0x7f020013;
+		public static final int form_text_color = 0x7f020021;
+		public static final int goto_position = 0x7f020022;
+		public static final int ic_launcher_bluegps = 0x7f020028;
+		public static final int ic_stat_notify = 0x7f020030;
+		public static final int package_download = 0x7f020047;
+		public static final int tmp = 0x7f020073;
 	}
 	public static final class id {
 		public static final int aboutview = 0x7f0c0000;
 		public static final int askcoordlabel = 0x7f0c0083;
-		public static final int authortext = 0x7f0c00e1;
+		public static final int authortext = 0x7f0c00e3;
 		public static final int bluetoothActiveLabel = 0x7f0c000d;
 		public static final int browsebuttonslayout = 0x7f0c001c;
 		public static final int browselist_text = 0x7f0c001f;
 		public static final int browselistlayout = 0x7f0c001e;
 		public static final int browsermainlayout = 0x7f0c001b;
 		public static final int buttonsLayout = 0x7f0c0020;
-		public static final int cancel = 0x7f0c00a9;
+		public static final int cancel = 0x7f0c00aa;
 		public static final int cancelButton = 0x7f0c004a;
 		public static final int cancelbutton = 0x7f0c0013;
 		public static final int colorspinner = 0x7f0c0040;
 		public static final int commandsBar = 0x7f0c003f;
 		public static final int coordOkButton = 0x7f0c0088;
-		public static final int datetext = 0x7f0c00e2;
-		public static final int descriptiontext = 0x7f0c00e0;
+		public static final int datetext = 0x7f0c00e4;
+		public static final int descriptiontext = 0x7f0c00e2;
 		public static final int detailFragment = 0x7f0c003d;
-		public static final int downloadproject_image = 0x7f0c00df;
+		public static final int downloadproject_image = 0x7f0c00e1;
 		public static final int drawingSurface = 0x7f0c003e;
 		public static final int enterLocationValue = 0x7f0c004b;
 		public static final int form_linear = 0x7f0c003c;
@@ -79,8 +80,8 @@ public final class R {
 		public static final int lookupLocationButton = 0x7f0c004c;
 		public static final int navButton = 0x7f0c0022;
 		public static final int nfcActiveLabel = 0x7f0c000f;
-		public static final int noteentry = 0x7f0c00a7;
-		public static final int ok = 0x7f0c00a8;
+		public static final int noteentry = 0x7f0c00a8;
+		public static final int ok = 0x7f0c00a9;
 		public static final int okButton = 0x7f0c0021;
 		public static final int okbutton = 0x7f0c0012;
 		public static final int read_id_edittext = 0x7f0c0011;
@@ -93,10 +94,10 @@ public final class R {
 		public static final int tableLayout1 = 0x7f0c000b;
 		public static final int tableRow1 = 0x7f0c000c;
 		public static final int tableRow2 = 0x7f0c000e;
-		public static final int titletext = 0x7f0c00de;
+		public static final int titletext = 0x7f0c00e0;
 		public static final int undoButton = 0x7f0c0043;
 		public static final int upbutton = 0x7f0c001d;
-		public static final int webprojectlayout = 0x7f0c00dd;
+		public static final int webprojectlayout = 0x7f0c00df;
 		public static final int widthspinner = 0x7f0c0041;
 	}
 	public static final class layout {
@@ -119,15 +120,14 @@ public final class R {
 		public static final int geopap_button = 0x7f030019;
 		public static final int insertcoord = 0x7f030020;
 		public static final int note = 0x7f030025;
-		public static final int webprojectlist = 0x7f030034;
-		public static final int webprojectsrow = 0x7f030035;
+		public static final int webprojectlist = 0x7f030035;
+		public static final int webprojectsrow = 0x7f030036;
 	}
 	public static final class plurals {
 		public static final int connection_problem_notification = 0x7f080000;
 	}
 	public static final class string {
 		public static final int activate_nfc = 0x7f0700c9;
-		public static final int add_map = 0x7f0700d4;
 		public static final int alpha = 0x7f0700cd;
 		public static final int approaching_poi = 0x7f0700ad;
 		public static final int askcoord = 0x7f07009e;

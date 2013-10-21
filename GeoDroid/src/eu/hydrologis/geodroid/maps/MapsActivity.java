@@ -48,11 +48,15 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -67,6 +71,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
@@ -425,7 +430,44 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 addBookmark();
             }
         });
+        
+        
+        // Add Map SketchNote Work
+        ImageButton addMapSketchButton = (ImageButton) findViewById(R.id.addmapsketchbutton);
+        addMapSketchButton.setOnClickListener(new Button.OnClickListener(){
 
+			public void onClick(View v) {
+				
+				String file_path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/geodroid/";
+            	File dir = new File(file_path);
+            	dir.mkdirs();
+            	File file = new File(dir, "tmp.png");
+           
+            	             	//Share
+          	                    	                    	
+            	 Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            	 shareIntent.setType("image/png");                   	
+            	                     	
+            	 shareIntent.putExtra(Intent.EXTRA_STREAM,Uri.fromFile(file));
+            	 shareIntent.putExtra(Intent.EXTRA_TEXT,"My Image");
+            	 PackageManager pm = getApplicationContext().getPackageManager();
+            	 List<ResolveInfo> activityList = pm.queryIntentActivities(shareIntent, 0);
+            	for (final ResolveInfo app : activityList) {
+            	    if ((app.activityInfo.name).contains("skitch")) {
+            	        final ActivityInfo activity = app.activityInfo;
+            	        final ComponentName name = new ComponentName(activity.applicationInfo.packageName,activity.name);
+            	        shareIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+            	        shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+            	                            | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            	        shareIntent.setComponent(name);
+            	        startActivity(shareIntent);
+            	    }
+    	        }
+    	    }
+    	
+    });
+   
+        
         ImageButton listNotesButton = (ImageButton) findViewById(R.id.listnotesbutton);
         listNotesButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {

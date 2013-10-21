@@ -7,15 +7,12 @@ import java.util.Date;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
+
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.net.Uri;
+
 import android.os.Bundle;
-import android.util.Log;
+
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,7 +22,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.ImageView;
+
 import android.widget.Spinner;
 import eu.geodroid.library.util.FileUtilities;
 import eu.geodroid.library.util.LibraryConstants;
@@ -36,7 +33,7 @@ import eu.geopaparazzi.library.sketch.brush.Brush;
 import eu.geopaparazzi.library.sketch.brush.PenBrush;
 import eu.geopaparazzi.library.sketch.commands.DrawingPath;
 import eu.geodroid.library.util.ColorUtilities;
-import android.graphics.Matrix;
+
 
 /**
  * Main drawing activity.
@@ -46,23 +43,10 @@ import android.graphics.Matrix;
  * @author almondmendoza (http://www.tutorialforandroid.com/)
  * @author Andrea Antonello (www.hydrologis.com)
  */
-@SuppressWarnings("unused")
 public class DrawingActivity extends Activity implements View.OnTouchListener {
     private static final int MENU_SAVE = Menu.FIRST;
     private static final int MENU_CANCEL = 2;
-    
- /**For "Add to Map" menu option in options menu **/   
-    
-   private static final int MENU_ADD = 3;
-   
-   // Add map to canvas work
-   
-   private Bitmap bmp;
-   private Bitmap alteredBitmap;
-   private Canvas canvas;
-   private Paint paint;
-   private  Matrix matrix;
-    private ImageView chosenImageView;
+
     private DrawingSurface drawingSurface;
     private DrawingPath currentDrawingPath;
     private Paint currentPaint;
@@ -78,25 +62,37 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
     private Spinner colorSpinner;
     private Spinner widthSpinner;
     private String imageSavePath;
+
     private double lon = -9999.0;
     private double lat = -9999.0;
     private double elevation = -9999.0;
     private File imageFile;
+   
+   
+
+     
 
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawing_activity);
-
+      
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             imageSavePath = extras.getString(LibraryConstants.PREFS_KEY_PATH);
             lon = extras.getDouble(LibraryConstants.LONGITUDE);
             lat = extras.getDouble(LibraryConstants.LATITUDE);
             elevation = extras.getDouble(LibraryConstants.ELEVATION);
+           
+            
+           
+            
         } else {
             throw new RuntimeException("Not implemented yet...");
         }
-
+        
+ 
+      
+       
         currentBrush = new PenBrush();
         currentWidth = 3f;
 
@@ -147,11 +143,8 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
         super.onCreateOptionsMenu(menu);
         menu.add(Menu.NONE, MENU_SAVE, 1, R.string.save).setIcon(android.R.drawable.ic_menu_save);
         menu.add(Menu.NONE, MENU_CANCEL, 2, R.string.cancel).setIcon(android.R.drawable.ic_menu_close_clear_cancel);
-        
-        // Add map to canvas work
-        menu.add(Menu.NONE, MENU_ADD, 3, R.string.add_map).setIcon(android.R.drawable.ic_menu_add);
-        return true;
-    } 
+     return true;
+    }
 
     public boolean onMenuItemSelected( int featureId, MenuItem item ) {
         switch( item.getItemId() ) {
@@ -165,12 +158,6 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
         case MENU_CANCEL:
             doFinish();
             return true;
-            
-            // Add map to canvas work
-        case MENU_ADD:
-        	addMap();
-        	return true;
-            
         default: {
         }
         }
@@ -183,47 +170,6 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
         finish();
     }
 
-    // Add Map to Canvas work
-    
-    private void addMap() {
-    	Intent choosePictureIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-    	startActivityForResult(choosePictureIntent, 0);
-    }
-    
-    // Add map to canvas work
-    
-//    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-//        super.onActivityResult(requestCode, resultCode, intent);
-//
-//        if (resultCode == RESULT_OK) {
-//         Uri imageFileUri = intent.getData();
-//         
-//         try {
-//             BitmapFactory.Options bmpFactoryOptions = new BitmapFactory.Options();
-//             bmpFactoryOptions.inJustDecodeBounds = true;
-//             bmp = BitmapFactory.decodeStream(getContentResolver().openInputStream(
-//             imageFileUri), null, bmpFactoryOptions);
-//             alteredBitmap = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), bmp.getConfig());
-//             canvas = new Canvas(alteredBitmap);
-//             paint = new Paint();
-//             paint.setColor(Color.GREEN);
-//             paint.setStrokeWidth(5);
-//             matrix = new Matrix();
-//             canvas.drawBitmap(bmp, matrix, paint);
-//             
-//             
-//             chosenImageView.setImageBitmap(alteredBitmap);
-//             chosenImageView.setOnTouchListener(this);
-//         } catch (Exception e) {
-//             Log.v("ERROR", e.toString());
-//                   }
-//                }
-//             }
-         
-         
-        
-       
-    
     private void saveImage() throws Exception {
         Date currentDate = new Date();
         String currentDatestring = LibraryConstants.TIMESTAMPFORMATTER.format(currentDate);
@@ -387,7 +333,6 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
     private void checkColor() {
         Object selectedItem = colorSpinner.getSelectedItem();
         String newColorStr = selectedItem.toString();
-//        currentColor = Color.parseColor(newColorStr.trim());
         currentColor = ColorUtilities.toColor(newColorStr.trim());
     }
 

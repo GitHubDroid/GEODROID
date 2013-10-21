@@ -55,6 +55,7 @@ public final class R {
         public static int ic_launcher_bluegps=0x7f020004;
         public static int ic_stat_notify=0x7f020005;
         public static int package_download=0x7f020006;
+        public static int tmp=0x7f020007;
     }
     public static final class id {
         public static int aboutview=0x7f090000;
@@ -136,7 +137,6 @@ public final class R {
     }
     public static final class string {
         public static int activate_nfc=0x7f0600c9;
-        public static int add_map=0x7f0600d4;
         public static int alpha=0x7f0600cd;
         public static int approaching_poi=0x7f0600ad;
         public static int askcoord=0x7f06009e;

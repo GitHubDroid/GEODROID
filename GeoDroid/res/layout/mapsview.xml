@@ -112,7 +112,7 @@
                         android:layout_margin="5dip"
                         android:background="@drawable/noteslist" >
                     </ImageButton>
-
+                    
                     <ImageButton
                         android:id="@+id/addbookmarkbutton"
                         android:layout_width="wrap_content"
@@ -128,6 +128,16 @@
                         android:layout_margin="5dip"
                         android:background="@drawable/bookmarkslist" >
                     </ImageButton>
+                    
+                    <!--Map Sketch Note Button Work -->
+                    <ImageButton 
+                      android:id="@+id/addmapsketchbutton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dip"
+                        android:background="@drawable/addmapsketch" >
+                    </ImageButton>
+                    
 
                     <ImageButton
                         android:id="@+id/togglemeasuremodebutton"
