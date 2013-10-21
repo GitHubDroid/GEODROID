@@ -891,6 +891,9 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             menu.add(Menu.NONE, MENU_SENDDATA_ID, 7, R.string.send_data).setIcon(android.R.drawable.ic_menu_send);
         }
 //        menu.add(Menu.NONE, MENU_MIXARE_ID, 8, R.string.view_in_mixare).setIcon(R.drawable.icon_datasource);
+
+//Map Sketch Menu option work
+//menu.add(Menu.NONE, MENU_MAP_SKETCH), 8, "map sketch").setIcon(android.R.drawable.ic_menu_);
         return true;
     }
 
@@ -913,6 +916,14 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         case MENU_COMPASS_ID:
             ActionBar.openCompass(this);
             return true;
+            
+        // MapSketch Menu Work
+       //case MENU_MAP_SKETCH:
+            // Intent mapsketchIntent = new Intent(this, MapSketchActivity.class);
+             //startActivityForResult(mapsketchIntent, MAPSKETCH_RETURN_CODE);
+             //return true;
+            
+            
 //////        case MENU_MIXARE_ID:
 //////            MixareHandler mixareHandler = new MixareHandler();
 //////            if (!mixareHandler.isMixareInstalled(this)) {
