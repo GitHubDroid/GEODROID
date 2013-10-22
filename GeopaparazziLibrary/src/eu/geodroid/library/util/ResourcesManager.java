@@ -48,6 +48,10 @@ public class ResourcesManager implements Serializable {
     private static final String PATH_MAPS = "maps"; //$NON-NLS-1$
 
     private static final String PATH_MEDIA = "media"; //$NON-NLS-1$
+    
+//Setup path for map sketches edited by skitch
+//   private static final String PATH_SKITCHES = "skitch";
+//   private File skitchesDir;
 
     private File applicationDir;
 
