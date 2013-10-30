@@ -32,9 +32,9 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import eu.geopaparazzi.library.R;
 import eu.geodroid.library.util.FileUtilities;
 import eu.geodroid.library.util.ResourcesManager;
-import eu.geopaparazzi.library.R;
 
 /**
  * A custom map view.
@@ -109,6 +109,12 @@ public class GMapView extends View implements GView {
 
     @Override
     public void setOnActivityResult( Intent data ) {
+    }
+
+    @Override
+    public void refresh( Context context ) {
+        // TODO Auto-generated method stub
+        
     }
 
 }
