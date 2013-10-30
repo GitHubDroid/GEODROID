@@ -29,10 +29,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import eu.geodroid.library.util.LibraryConstants;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.forms.FragmentDetail;
 import eu.geopaparazzi.library.nfc.NfcIdReaderActivity;
+import eu.geodroid.library.util.LibraryConstants;
 
 /**
  * A custom NFC UID reader view.
@@ -125,6 +125,12 @@ public class GNfcUidView extends View implements GView {
         }
         _value = rfidUID;
         uidText.setText(rfidUID);
+    }
+
+    @Override
+    public void refresh( Context context ) {
+        // TODO Auto-generated method stub
+        
     }
 
 }
