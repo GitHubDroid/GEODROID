@@ -34,9 +34,9 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import eu.geodroid.library.util.LibraryConstants;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.forms.FormTimePickerFragment;
+import eu.geodroid.library.util.LibraryConstants;
 
 /**
  * A custom time view.
@@ -121,6 +121,12 @@ public class GTimeView extends View implements GView {
 
     @Override
     public void setOnActivityResult( Intent data ) {
+    }
+
+    @Override
+    public void refresh( Context context ) {
+        // TODO Auto-generated method stub
+        
     }
 
 }
