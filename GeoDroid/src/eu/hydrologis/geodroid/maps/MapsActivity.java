@@ -19,7 +19,6 @@ package eu.hydrologis.geodroid.maps;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
@@ -61,10 +60,8 @@ import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
@@ -136,6 +133,9 @@ import eu.hydrologis.geodroid.util.Constants;
 import eu.hydrologis.geodroid.util.MixareUtilities;
 import eu.hydrologis.geodroid.util.Note;
 import eu.hydrologis.geodroid.R;
+import android.graphics.Rect;
+import android.graphics.Canvas;
+import java.io.FileOutputStream;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
@@ -408,19 +408,19 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                         public void run() {
                             try {
                             	
-                            	//Old Screenshot Code
-                                //mapView.takeScreenshot(Bitmap.CompressFormat.PNG, 90, tmpImageFile);
-                                
-                                //NEW SCREENSHOT CODE
-                                 Rect t = new Rect();
-                                 mapView.getDrawingRect(t);
-                                 Bitmap bufferedBitmap = Bitmap.createBitmap(t.width(), t.height(), Bitmap.Config.ARGB_8888);
-                                 Canvas bufferedCanvas = new Canvas(bufferedBitmap);
-                                 mapView.draw(bufferedCanvas);
-                                 FileOutputStream out = new FileOutputStream(tmpImageFile);
-                                 bufferedBitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
-                                 out.close();
-                                
+                            	//Old Screenshot code
+                            	//mapView.takeScreenshot(Bitmap.CompressFormat.PNG, 90, tmpImageFile);
+                            	
+                            	//NEW SCREENSHOT CODE
+                            	 Rect t = new Rect();
+                            	 mapView.getDrawingRect(t);
+                            	 Bitmap bufferedBitmap = Bitmap.createBitmap(t.width(), t.height(), Bitmap.Config.ARGB_8888);
+                            	 Canvas bufferedCanvas = new Canvas(bufferedBitmap);
+                            	 mapView.draw(bufferedCanvas);
+                            	 FileOutputStream out = new FileOutputStream(tmpImageFile);
+                            	 bufferedBitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+                            	 out.close();
+                            	
                             } catch (Exception e) {
                             }
                         }
@@ -448,40 +448,40 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         });
         
         
-        // Add Map SketchNote Work
-        ImageButton addMapSketchButton = (ImageButton) findViewById(R.id.addmapsketchbutton);
-        addMapSketchButton.setOnClickListener(new Button.OnClickListener(){
-
-			public void onClick(View v) {
-				
-				String file_path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/geodroid/";
-            	File dir = new File(file_path);
-            	dir.mkdirs();
-            	File file = new File(dir, "tmp.png");
-           
-            	             	//Share
-          	                    	                    	
-            	 Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            	 shareIntent.setType("image/png");                   	
-            	                     	
-            	 shareIntent.putExtra(Intent.EXTRA_STREAM,Uri.fromFile(file));
-            	 shareIntent.putExtra(Intent.EXTRA_TEXT,"My Image");
-            	 PackageManager pm = getApplicationContext().getPackageManager();
-            	 List<ResolveInfo> activityList = pm.queryIntentActivities(shareIntent, 0);
-            	for (final ResolveInfo app : activityList) {
-            	    if ((app.activityInfo.name).contains("skitch")) {
-            	        final ActivityInfo activity = app.activityInfo;
-            	        final ComponentName name = new ComponentName(activity.applicationInfo.packageName,activity.name);
-            	        shareIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-            	        shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-            	                            | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-            	        shareIntent.setComponent(name);
-            	        startActivity(shareIntent);
-            	    }
-    	        }
-    	    }
-    	
-    });
+//        // Add Map SketchNote Work
+//        ImageButton addMapSketchButton = (ImageButton) findViewById(R.id.addmapsketchbutton);
+//        addMapSketchButton.setOnClickListener(new Button.OnClickListener(){
+//
+//			public void onClick(View v) {
+//				
+//				String file_path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/geodroid/";
+//            	File dir = new File(file_path);
+//            	dir.mkdirs();
+//            	File file = new File(dir, "tmp.png");
+//           
+//            	             	//Share
+//          	                    	                    	
+//            	 Intent shareIntent = new Intent(Intent.ACTION_SEND);
+//            	 shareIntent.setType("image/png");                   	
+//            	                     	
+//            	 shareIntent.putExtra(Intent.EXTRA_STREAM,Uri.fromFile(file));
+//            	 shareIntent.putExtra(Intent.EXTRA_TEXT,"My Image");
+//            	 PackageManager pm = getApplicationContext().getPackageManager();
+//            	 List<ResolveInfo> activityList = pm.queryIntentActivities(shareIntent, 0);
+//            	for (final ResolveInfo app : activityList) {
+//            	    if ((app.activityInfo.name).contains("skitch")) {
+//            	        final ActivityInfo activity = app.activityInfo;
+//            	        final ComponentName name = new ComponentName(activity.applicationInfo.packageName,activity.name);
+//            	        shareIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+//            	        shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+//            	                            | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+//            	        shareIntent.setComponent(name);
+//            	        startActivity(shareIntent);
+//            	    }
+//    	        }
+//    	    }
+//    	
+//    });
    
         
         ImageButton listNotesButton = (ImageButton) findViewById(R.id.listnotesbutton);
@@ -907,9 +907,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             menu.add(Menu.NONE, MENU_SENDDATA_ID, 7, R.string.send_data).setIcon(android.R.drawable.ic_menu_send);
         }
 //        menu.add(Menu.NONE, MENU_MIXARE_ID, 8, R.string.view_in_mixare).setIcon(R.drawable.icon_datasource);
-
-//Map Sketch Menu option work
-//menu.add(Menu.NONE, MENU_MAP_SKETCH), 8, "map sketch").setIcon(android.R.drawable.ic_menu_);
         return true;
     }
 
@@ -932,14 +929,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         case MENU_COMPASS_ID:
             ActionBar.openCompass(this);
             return true;
-            
-        // MapSketch Menu Work
-       //case MENU_MAP_SKETCH:
-            // Intent mapsketchIntent = new Intent(this, MapSketchActivity.class);
-             //startActivityForResult(mapsketchIntent, MAPSKETCH_RETURN_CODE);
-             //return true;
-            
-            
 //////        case MENU_MIXARE_ID:
 //////            MixareHandler mixareHandler = new MixareHandler();
 //////            if (!mixareHandler.isMixareInstalled(this)) {

@@ -58,7 +58,6 @@ public class MapTagsActivity extends Activity {
     private double latitude;
     private double longitude;
     private double elevation;
-    private String tmppngimagename;
     private String[] tagNamesArray;
 
     public void onCreate( Bundle icicle ) {
@@ -100,7 +99,6 @@ public class MapTagsActivity extends Activity {
                 intent.putExtra(LibraryConstants.LONGITUDE, longitude);
                 intent.putExtra(LibraryConstants.LATITUDE, latitude);
                 intent.putExtra(LibraryConstants.ELEVATION, elevation);
-               	intent.putExtra(LibraryConstants.TMPPNGIMAGENAME, tmppngimagename);
                 MapTagsActivity.this.startActivityForResult(intent, SKETCH_RETURN_CODE);
             }
         });

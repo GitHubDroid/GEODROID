@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 
@@ -15,6 +16,7 @@ import android.os.Message;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.sketch.commands.CommandManager;
 import eu.geopaparazzi.library.sketch.commands.DrawingPath;
@@ -33,6 +35,9 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
     private Bitmap mBitmap;
     public static boolean isDrawing = true;
     public DrawingPath previewPath;
+    
+    //New    
+    private Bitmap scaled;
 
     private CommandManager commandManager;
 
@@ -48,9 +53,11 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
         commandManager = new CommandManager();
         thread = new DrawThread(getHolder());
         
-       
-      
-       
+     }
+    
+    //New
+    public void onDraw(Canvas canvas) {
+    	canvas.drawBitmap(scaled, 0, 0, null);  //Draw the background
     }
 
     
@@ -174,6 +181,12 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
     }
 
     public void surfaceCreated( SurfaceHolder holder ) {
+    	
+    	 Bitmap background = BitmapFactory.decodeResource(getResources(), R.drawable.tmp);
+         float scale = (float) background.getHeight() / (float) getHeight();
+         int newWidth = Math.round(background.getWidth() / scale);
+         int newHeight = Math.round(background.getHeight() / scale);
+         scaled = Bitmap.createScaledBitmap(background, newWidth, newHeight, true);
         if (!_run) {
             thread.setRunning(true);
             thread.start();

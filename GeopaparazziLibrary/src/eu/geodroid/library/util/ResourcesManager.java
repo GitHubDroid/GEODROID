@@ -52,7 +52,7 @@ public class ResourcesManager implements Serializable {
 //Setup path for map sketches edited by skitch
 //   private static final String PATH_SKITCHES = "skitch";
 //   private File skitchesDir;
-
+        
     private File applicationDir;
 
     private File databaseFile;
