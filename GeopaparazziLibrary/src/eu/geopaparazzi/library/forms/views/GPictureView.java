@@ -41,13 +41,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.camera.CameraActivity;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geodroid.library.util.FileUtilities;
 import eu.geodroid.library.util.LibraryConstants;
 import eu.geodroid.library.util.PositionUtilities;
 import eu.geodroid.library.util.ResourcesManager;
-import eu.geopaparazzi.library.R;
-import eu.geopaparazzi.library.camera.CameraActivity;
-import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * A custom pictures view.
@@ -178,7 +178,7 @@ public class GPictureView extends View implements GView {
         refresh(context);
     }
 
-    private void refresh( final Context context ) {
+    public void refresh( final Context context ) {
         log("Entering refresh....");
 
         if (_value != null && _value.length() > 0) {
