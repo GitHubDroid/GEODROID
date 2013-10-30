@@ -40,6 +40,7 @@ import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_TIME;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -57,14 +58,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import eu.geodroid.library.util.FileUtilities;
-import eu.geodroid.library.util.LibraryConstants;
-import eu.geodroid.library.util.ResourcesManager;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
 import eu.geopaparazzi.library.forms.views.GNfcUidView;
 import eu.geopaparazzi.library.forms.views.GView;
+import eu.geodroid.library.util.FileUtilities;
+import eu.geodroid.library.util.LibraryConstants;
+import eu.geodroid.library.util.ResourcesManager;
 
 /**
  * The fragment detail view.
@@ -228,7 +229,7 @@ public class FragmentDetail extends Fragment {
         }
         return view;
     }
-
+    
     public void onActivityResult( int requestCode, int resultCode, Intent data ) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
