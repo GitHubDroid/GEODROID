@@ -28,8 +28,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import eu.geodroid.library.util.MultipleChoiceDialog;
 import eu.geopaparazzi.library.R;
+import eu.geodroid.library.util.MultipleChoiceDialog;
 
 /**
  * A custom {@link Spinner} view.
@@ -97,6 +97,12 @@ public class GMultiComboView extends View implements GView {
 
     @Override
     public void setOnActivityResult( Intent data ) {
+    }
+
+    @Override
+    public void refresh( Context context ) {
+        // TODO Auto-generated method stub
+        
     }
 
 }
