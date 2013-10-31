@@ -6,7 +6,7 @@
             {
                 "formname": "image note",
                 "formitems": [
-                                        {
+					{
                         "key": "description",
                         "islabel": "true",
                         "value": "",
@@ -14,11 +14,11 @@
                         "mandatory": "no"
                     },
                     {
-                                                "key": "pictures of the environment around the note",
+						"key": "pictures of the environment around the note",
                         "value": "",
                         "type": "pictures"
-                                        }
-                                ]
+					}
+				]
             }
         ]
     },{
@@ -28,7 +28,7 @@
             {
                 "formname": "sketch note",
                 "formitems": [
-                                        {
+					{
                         "key": "description",
                         "islabel": "true",
                         "value": "",
@@ -36,11 +36,11 @@
                         "mandatory": "no"
                     },
                     {
-                                                "key": "sketches with drawings of the environment around the note",
+						"key": "sketches with drawings of the environment around the note",
                         "value": "",
                         "type": "sketch"
-                                        }
-                                ]
+					}
+				]
             }
         ]
     },{
@@ -50,7 +50,7 @@
             {
                 "formname": "map image note",
                 "formitems": [
-                                        {
+					{
                         "key": "description",
                         "islabel": "true",
                         "value": "",
@@ -58,14 +58,14 @@
                         "mandatory": "no"
                     },
                     {
-                                                "key": "map around note",
+						"key": "map around note",
                         "value": "",
                         "type": "map"
-                                        }
-                                ]
+					}
+				]
             }
         ]
-        },{
+	},{
         "sectionname": "text note",
         "sectiondescription": "a simple text note",
         "forms": [
@@ -88,7 +88,7 @@
                 ]
             }
         ]
-        },{
+	},{
         "sectionname": "examples",
         "sectiondescription": "examples of supported form widgets",
         "forms": [
@@ -133,12 +133,12 @@
                 "formitems": [
                     {
                         "value": "a simple label of size 20",
-                                                "size": "20",
+						"size": "20",
                         "type": "label"
                     },{
                         "value": "a underlined label of size 24",
                         "size": "24",
-                                                "type": "labelwithline"
+						"type": "labelwithline"
                     },{
                         "value": "a label with link to the geopaparazzi homepage",
                         "url": "http://www.geopaparazzi.eu",
@@ -217,5 +217,5 @@
                 ]
             }
         ]
-        }
+	}
 ]
