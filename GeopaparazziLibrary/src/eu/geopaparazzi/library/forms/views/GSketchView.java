@@ -45,10 +45,10 @@ import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.markers.MarkersUtilities;
-import eu.geopaparazzi.library.util.FileUtilities;
-import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.PositionUtilities;
-import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geodroid.library.util.FileUtilities;
+import eu.geodroid.library.util.LibraryConstants;
+import eu.geodroid.library.util.PositionUtilities;
+import eu.geodroid.library.util.ResourcesManager;
 
 /**
  * A custom Sketch view.
