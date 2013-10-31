@@ -24,8 +24,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,6 +33,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewTreeObserver;
@@ -43,13 +44,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geodroid.library.markers.MarkersUtilities;
-import eu.geopaparazzi.library.sketch.DrawingActivity;
-import eu.geodroid.library.util.FileUtilities;
-import eu.geodroid.library.util.LibraryConstants;
-import eu.geodroid.library.util.PositionUtilities;
-import eu.geodroid.library.util.ResourcesManager;
-import eu.geodroid.library.util.debug.Debug;
+import eu.geopaparazzi.library.markers.MarkersUtilities;
+import eu.geopaparazzi.library.util.FileUtilities;
+import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.PositionUtilities;
+import eu.geopaparazzi.library.util.ResourcesManager;
 
 /**
  * A custom Sketch view.
