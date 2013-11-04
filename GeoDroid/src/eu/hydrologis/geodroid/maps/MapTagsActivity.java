@@ -21,7 +21,6 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.FormActivity;
 import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geodroid.library.markers.MarkersUtilities;
-import eu.geopaparazzi.library.sketch.DrawingActivity;
 import eu.geodroid.library.util.LibraryConstants;
 import eu.geodroid.library.util.PositionUtilities;
 import eu.geodroid.library.util.ResourcesManager;
