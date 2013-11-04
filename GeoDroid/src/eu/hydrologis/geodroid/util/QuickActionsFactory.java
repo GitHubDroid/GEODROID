@@ -1,20 +1,3 @@
-/*
- * Geopaparazzi - Digital field mapping on Android based devices
- * Copyright (C) 2010  HydroloGIS (www.hydrologis.com)
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package eu.hydrologis.geodroid.util;
 
 import java.io.BufferedWriter;
@@ -38,9 +21,11 @@ import android.widget.EditText;
 import eu.geopaparazzi.library.camera.CameraActivity;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gps.GpsManager;
+import eu.geodroid.library.markers.MarkersUtilities;
 import eu.geopaparazzi.library.sketch.DrawingActivity;
 import eu.geodroid.library.util.LibraryConstants;
 import eu.geodroid.library.util.PositionUtilities;
+import eu.geodroid.library.util.ResourcesManager;
 import eu.geodroid.library.util.Utilities;
 import eu.geodroid.library.util.activities.NoteActivity;
 import eu.hydrologis.geodroid.dashboard.ActionBar;
@@ -48,6 +33,7 @@ import eu.hydrologis.geodroid.dashboard.quickaction.dashboard.ActionItem;
 import eu.hydrologis.geodroid.dashboard.quickaction.dashboard.QuickAction;
 import eu.hydrologis.geodroid.database.DaoGpsLog;
 import eu.hydrologis.geodroid.maps.DataManager;
+import eu.hydrologis.geopaparazzi.maps.MapTagsActivity;
 import eu.hydrologis.geodroid.R;
 
 /**
@@ -282,11 +268,22 @@ public enum QuickActionsFactory {
                         // double[] gpsLocation =
                         // PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
                         if (gpsLocation != null) {
-                            Intent cameraIntent = new Intent(activity, DrawingActivity.class);
-                            cameraIntent.putExtra(LibraryConstants.LATITUDE, gpsLocation[1]);
-                            cameraIntent.putExtra(LibraryConstants.LONGITUDE, gpsLocation[0]);
-                            cameraIntent.putExtra(LibraryConstants.ELEVATION, gpsLocation[2]);
-                            activity.startActivityForResult(cameraIntent, requestCode);
+                            java.util.Date currentDate = new java.util.Date();
+                             String currentDatestring = LibraryConstants.TIMESTAMPFORMATTER.format(currentDate);
+                             File mediaDir = null;
+                             try {
+                                 mediaDir = ResourcesManager.getInstance(activity).getMediaDir();
+                             } catch (Exception e) {
+                                 e.printStackTrace();
+                             }
+                             File newImageFile = new File(mediaDir, "SKETCH_" + currentDatestring + ".png");
+                             MarkersUtilities.launchForResult(activity, newImageFile, gpsLocation, requestCode);
+ 
+                             // Intent cameraIntent = new Intent(activity, DrawingActivity.class);
+                             // cameraIntent.putExtra(LibraryConstants.LATITUDE, gpsLocation[1]);
+                             // cameraIntent.putExtra(LibraryConstants.LONGITUDE, gpsLocation[0]);
+                             // cameraIntent.putExtra(LibraryConstants.ELEVATION, gpsLocation[2]);
+                             // activity.startActivityForResult(cameraIntent, requestCode);
                             isValid = true;
                         }
                     }
