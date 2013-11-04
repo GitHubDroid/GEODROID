@@ -1,26 +1,11 @@
-/*
- * Geopaparazzi - Digital field mapping on Android based devices
- * Copyright (C) 2010  HydroloGIS (www.hydrologis.com)
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package eu.geopaparazzi.library.forms;
 
-import static eu.geopaparazzi.library.forms.FormUtilities.TAG_KEY;
+
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_ISLABEL;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_KEY;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUE;
 
+import java.io.File;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +25,7 @@ import eu.geodroid.library.util.LibraryConstants;
 import eu.geodroid.library.util.Utilities;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
+import eu.geodroid.library.share.ShareUtilities;
 
 /**
  * The form activity.
@@ -136,12 +122,48 @@ public class FormActivity extends FragmentActivity {
             Utilities.messageDialog(this, e.getLocalizedMessage(), null);
         }
     }
+    
+    public void shareClicked( View view ) {
+         try {
+             shareAction();
+         } catch (Exception e) {
+             e.printStackTrace();
+             Utilities.messageDialog(this, e.getLocalizedMessage(), null);
+         }
+    }
+    
     public void cancelClicked( View view ) {
         finish();
     }
+    
+      private void shareAction() throws Exception {
+         String form = sectionObject.toString();
+         float lat = (float) latitude;
+         float lon = (float) longitude;
+         String osmUrl = Utilities.osmUrlFromLatLong(lat, lon, true, false);
+         // double altim = note.getAltim();
+         List<String> imagePaths = FormUtilities.getImages(form);
+         File imageFile = null;
+         if (imagePaths.size() > 0) {
+             String imagePath = imagePaths.get(0);
+             imageFile = new File(imagePath);
+             if (!imageFile.exists()) {
+                 imageFile = null;
+             }
+         }
+         String formText = FormUtilities.formToPlainText(form, false);
+         formText = formText + "\n" + osmUrl;
+         String shareNoteMsg = getResources().getString(R.string.share_note_with);
+         if (imageFile != null) {
+             ShareUtilities.shareTextAndImage(this, shareNoteMsg, formText, imageFile);
+         } else {
+             ShareUtilities.shareText(this, shareNoteMsg, formText);
+         }
+ 
+     }
 
     private void saveAction() throws Exception {
-        // if i landscape mode store last inserted info, since that fragment has not been stored
+        // if in landscape mode store last inserted info, since that fragment has not been stored
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             FragmentDetail detailFragment = (FragmentDetail) getSupportFragmentManager().findFragmentById(R.id.detailFragment);
             if (detailFragment != null) {
