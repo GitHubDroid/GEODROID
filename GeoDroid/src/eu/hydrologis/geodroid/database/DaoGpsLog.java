@@ -1,20 +1,3 @@
-/*
- * Geopaparazzi - Digital field mapping on Android based devices
- * Copyright (C) 2010  HydroloGIS (www.hydrologis.com)
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package eu.hydrologis.geodroid.database;
 
 import static java.lang.Math.abs;
@@ -35,7 +18,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
@@ -851,6 +833,37 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 c.close();
         }
     }
+    
+       /**
+      * Get the last point of a gps log.
+      * @param logId the id of the log to query.
+      * 
+      * @return the array of [lon, lat] of the last point.
+      * @throws IOException
+      */
+     public static double[] getGpslogLastPoint( long logId ) throws IOException {
+         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+         
+         String asColumnsToReturn[] = {COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_ALTIM, COLUMN_DATA_TS};
+         String strSortOrder = COLUMN_DATA_TS + " DESC";
+         String strWhere = COLUMN_LOGID + "=" + logId;
+         Cursor c = null;
+         try {
+             c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, null, null, null, strSortOrder, "1");
+             c.moveToFirst();
+             double[] lonLat = new double[2];
+             while( !c.isAfterLast() ) {
+                 lonLat[0] = c.getDouble(0);
+                 lonLat[1] = c.getDouble(1);
+                 break;
+             }
+             return lonLat;
+         } finally {
+             if (c != null)
+                 c.close();
+         }
+     }
+ 
 
     /**
      * Import a gpx in the database.
