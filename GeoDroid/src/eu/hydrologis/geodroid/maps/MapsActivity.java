@@ -1,20 +1,3 @@
-/*
- * Geopaparazzi - Digital field mapping on Android based devices
- * Copyright (C) 2010  HydroloGIS (www.hydrologis.com)
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package eu.hydrologis.geodroid.maps;
 
 import java.io.File;
@@ -99,7 +82,7 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gps.GpsLocation;
 import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.gps.GpsManagerListener;
-//import eu.geopaparazzi.library.mixare.MixareHandler;
+
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.sms.SmsData;
 import eu.geopaparazzi.library.sms.SmsUtilities;
@@ -425,13 +408,16 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                             }
                         }
                     }).start();
-                    MapViewPosition mapPosition = mapView.getMapPosition();
-                    GeoPoint mapCenter = mapPosition.getMapCenter();
+                    // MapViewPosition mapPosition = mapView.getMapPosition();
+                    // GeoPoint mapCenter = mapPosition.getMapCenter();
                     Intent mapTagsIntent = new Intent(MapsActivity.this, MapTagsActivity.class);
-                    mapTagsIntent.putExtra(LibraryConstants.LATITUDE, (double) (mapCenter.latitudeE6 / LibraryConstants.E6));
-                    mapTagsIntent.putExtra(LibraryConstants.LONGITUDE, (double) (mapCenter.longitudeE6 / LibraryConstants.E6));
-                    mapTagsIntent.putExtra(LibraryConstants.ELEVATION, 0.0);
-                    mapTagsIntent.putExtra(LibraryConstants.TMPPNGIMAGENAME, tmpImageFile.getAbsolutePath());
+                    // mapTagsIntent.putExtra(LibraryConstants.LATITUDE, (double)
+                    // (mapCenter.latitudeE6 / LibraryConstants.E6));
+                    // mapTagsIntent.putExtra(LibraryConstants.LONGITUDE, (double)
+                    // (mapCenter.longitudeE6 / LibraryConstants.E6));
+                    // mapTagsIntent.putExtra(LibraryConstants.ELEVATION, 0.0);
+                    // mapTagsIntent.putExtra(LibraryConstants.TMPPNGIMAGENAME,
+                    // tmpImageFile.getAbsolutePath());
                     startActivity(mapTagsIntent);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -447,42 +433,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             }
         });
         
-        
-//        // Add Map SketchNote Work
-//        ImageButton addMapSketchButton = (ImageButton) findViewById(R.id.addmapsketchbutton);
-//        addMapSketchButton.setOnClickListener(new Button.OnClickListener(){
-//
-//			public void onClick(View v) {
-//				
-//				String file_path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/geodroid/";
-//            	File dir = new File(file_path);
-//            	dir.mkdirs();
-//            	File file = new File(dir, "tmp.png");
-//           
-//            	             	//Share
-//          	                    	                    	
-//            	 Intent shareIntent = new Intent(Intent.ACTION_SEND);
-//            	 shareIntent.setType("image/png");                   	
-//            	                     	
-//            	 shareIntent.putExtra(Intent.EXTRA_STREAM,Uri.fromFile(file));
-//            	 shareIntent.putExtra(Intent.EXTRA_TEXT,"My Image");
-//            	 PackageManager pm = getApplicationContext().getPackageManager();
-//            	 List<ResolveInfo> activityList = pm.queryIntentActivities(shareIntent, 0);
-//            	for (final ResolveInfo app : activityList) {
-//            	    if ((app.activityInfo.name).contains("skitch")) {
-//            	        final ActivityInfo activity = app.activityInfo;
-//            	        final ComponentName name = new ComponentName(activity.applicationInfo.packageName,activity.name);
-//            	        shareIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-//            	        shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-//            	                            | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-//            	        shareIntent.setComponent(name);
-//            	        startActivity(shareIntent);
-//            	    }
-//    	        }
-//    	    }
-//    	
-//    });
-   
         
         ImageButton listNotesButton = (ImageButton) findViewById(R.id.listnotesbutton);
         listNotesButton.setOnClickListener(new Button.OnClickListener(){
