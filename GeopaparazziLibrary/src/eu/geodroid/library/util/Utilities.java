@@ -1,20 +1,3 @@
-/*
- * Geopaparazzi - Digital field mapping on Android based devices
- * Copyright (C) 2010  HydroloGIS (www.hydrologis.com)
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package eu.geodroid.library.util;
 
 import java.io.File;
@@ -31,6 +14,7 @@ import android.os.Looper;
 import android.os.StatFs;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 import eu.geopaparazzi.library.database.GPLog;
@@ -236,7 +220,39 @@ public class Utilities {
 
             protected void onPostExecute( String response ) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setMessage(msg).setCancelable(false)
+                builder.setMessage(msg).setIcon(android.R.drawable.ic_dialog_info).setCancelable(false)
+                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
+                             public void onClick( DialogInterface dialog, int id ) {
+                                 if (okRunnable != null) {
+                                     new Thread(okRunnable).start();
+                                 }
+                             }
+                         });
+                 AlertDialog alertDialog = builder.create();
+                 alertDialog.show();
+             }
+         }.execute((String) null);
+     }
+ 
+     /**
+      * Execute a generic error dialog in an {@link AsyncTask}.
+      * 
+      * @param context the {@link Context} to use.
+      * @param t the exception.
+      * @param okRunnable optional {@link Runnable} to trigger after ok was pressed. 
+      */
+     public static void errorDialog( final Context context, final Throwable t, final Runnable okRunnable ) {
+ 
+         new AsyncTask<String, Void, String>(){
+             protected String doInBackground( String... params ) {
+                 return ""; //$NON-NLS-1$
+             }
+ 
+             protected void onPostExecute( String response ) {
+                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                 builder //
+                 .setTitle(t.getLocalizedMessage()).setMessage(Log.getStackTraceString(t))
+                         .setIcon(android.R.drawable.ic_dialog_alert).setCancelable(false)
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener(){
                             public void onClick( DialogInterface dialog, int id ) {
                                 if (yesRunnable != null) {
@@ -557,5 +573,33 @@ public class Utilities {
     public static double toFeet( final double meters ) {
     return meters * METER_TO_FEET_CONVERSION_FACTOR;
     }
-
+    
+    /**
+     * Create an OSM url from coordinates.
+      * 
+      * @param lat
+      * @param lon
+      * @param withMarker
+      * @param withGeosmsParam
+      * @return
+      */
+     public static String osmUrlFromLatLong( float lat, float lon, boolean withMarker, boolean withGeosmsParam ) {
+         StringBuilder sB = new StringBuilder();
+         sB.append("http://www.osm.org/?lat=");
+         sB.append(lat);
+         sB.append("&lon=");
+         sB.append(lon);
+         sB.append("&zoom=14");
+         if (withMarker) {
+             sB.append("&layers=M&mlat=");
+             sB.append(lat);
+             sB.append("&mlon=");
+             sB.append(lon);
+         }
+         if (withGeosmsParam) {
+             sB.append("&GeoSMS");
+         }
+         return sB.toString();
+     }
+ 
 }
