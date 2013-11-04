@@ -1,17 +1,21 @@
 package eu.hydrologis.geodroid;
 
 import java.io.File;
-import java.io.FilenameFilter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
+
+import org.mapsforge.android.maps.MapViewPosition;
+import org.mapsforge.core.model.GeoPoint;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -20,6 +24,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -37,13 +45,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SlidingDrawer;
 import android.widget.Toast;
-import eu.geodroid.library.util.FileUtilities;
-import eu.geodroid.library.util.LibraryConstants;
-import eu.geodroid.library.util.PositionUtilities;
-import eu.geodroid.library.util.ResourcesManager;
-import eu.geodroid.library.util.Utilities;
-import eu.geodroid.library.util.activities.AboutActivity;
-import eu.geodroid.library.util.activities.DirectoryBrowserActivity;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
 import eu.geopaparazzi.library.gps.GpsLocation;
@@ -51,32 +52,45 @@ import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.sensors.SensorsManager;
 import eu.geopaparazzi.library.sms.SmsData;
 import eu.geopaparazzi.library.sms.SmsUtilities;
+import eu.geopaparazzi.library.util.FileUtilities;
+import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.PositionUtilities;
+import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.library.util.activities.AboutActivity;
+import eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity;
+import eu.geopaparazzi.library.util.activities.NoteActivity;
+import eu.geopaparazzi.library.util.debug.TestMock;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
-import eu.hydrologis.geodroid.dashboard.ActionBar;
-import eu.hydrologis.geodroid.dashboard.quickaction.dashboard.ActionItem;
-import eu.hydrologis.geodroid.dashboard.quickaction.dashboard.QuickAction;
-import eu.hydrologis.geodroid.database.DaoBookmarks;
-import eu.hydrologis.geodroid.database.DaoGpsLog;
-import eu.hydrologis.geodroid.database.DaoImages;
-import eu.hydrologis.geodroid.database.DaoNotes;
-import eu.hydrologis.geodroid.database.DatabaseManager;
-import eu.hydrologis.geodroid.database.NoteType;
-import eu.hydrologis.geodroid.maps.DataManager;
-import eu.hydrologis.geodroid.maps.LogMapItem;
-import eu.hydrologis.geodroid.maps.MapsActivity;
-import eu.hydrologis.geodroid.maps.tiles.MapGeneratorInternal;
-import eu.hydrologis.geodroid.osm.OsmUtilities;
-import eu.hydrologis.geodroid.preferences.PreferencesActivity;
-import eu.hydrologis.geodroid.util.Constants;
-import eu.hydrologis.geodroid.util.ExportActivity;
-import eu.hydrologis.geodroid.util.ImportActivity;
-import eu.hydrologis.geodroid.util.QuickActionsFactory;
-import eu.hydrologis.geodroid.util.SecretActivity;
+import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
+import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.ActionItem;
+import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction;
+import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
+import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
+import eu.hydrologis.geopaparazzi.database.DaoImages;
+import eu.hydrologis.geopaparazzi.database.DaoNotes;
+import eu.hydrologis.geopaparazzi.database.DatabaseManager;
+import eu.hydrologis.geopaparazzi.database.NoteType;
+import eu.hydrologis.geopaparazzi.maps.DataManager;
+import eu.hydrologis.geopaparazzi.maps.LogMapItem;
+import eu.hydrologis.geopaparazzi.maps.MapTagsActivity;
+import eu.hydrologis.geopaparazzi.maps.MapsActivity;
+import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
+import eu.hydrologis.geopaparazzi.preferences.PreferencesActivity;
+import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.hydrologis.geopaparazzi.util.ExportActivity;
+import eu.hydrologis.geopaparazzi.util.GpUtilities;
+import eu.hydrologis.geopaparazzi.util.ImportActivity;
+import eu.hydrologis.geopaparazzi.util.QuickActionsFactory;
+import eu.hydrologis.geopaparazzi.util.SecretActivity;
 
-
+/**
+ * The main {@link Activity activity} of GeoPaparazzi.
+ *
+ * @author Andrea Antonello (www.hydrologis.com)
+ */
 public class GeoPaparazziActivity extends Activity {
-
 
     private static final int MENU_ABOUT = Menu.FIRST;
     private static final int MENU_EXIT = 2;
@@ -96,61 +110,129 @@ public class GeoPaparazziActivity extends Activity {
     private boolean sliderIsOpen = false;
     private GpsManager gpsManager;
     private SensorsManager sensorManager;
-    private HashMap<Integer, String> tileSourcesMap = null;
+    private List<String> tileSourcesList = null;
     private HashMap<String, String> fileSourcesMap = null;
     private HashMap<String, SpatialRasterTable> rasterSourcesMap = null;
-    private AlertDialog mapChoiceDialog;
 
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
-
         try {
+            checkMockLocations();
             initializeResourcesManager();
-
-            fileSourcesMap = new HashMap<String, String>();
-            rasterSourcesMap = new HashMap<String, SpatialRasterTable>();
-
-            tileSourcesMap = new LinkedHashMap<Integer, String>();
-            tileSourcesMap.put(1001, MapGeneratorInternal.DATABASE_RENDERER.name());
-            tileSourcesMap.put(1002, MapGeneratorInternal.MAPNIK.name());
-            tileSourcesMap.put(1003, MapGeneratorInternal.OPENCYCLEMAP.name());
-            File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
-            int i = 1004;
-            if (mapsDir != null && mapsDir.exists()) {
-                File[] mapFiles = mapsDir.listFiles(new FilenameFilter(){
-                    public boolean accept( File dir, String filename ) {
-                        return filename.endsWith(".mapurl"); //$NON-NLS-1$
-                    }
-                });
-
-                Arrays.sort(mapFiles);
-
-                for( File file : mapFiles ) {
-                    String name = FileUtilities.getNameWithoutExtention(file);
-                    tileSourcesMap.put(i++, name);
-                    fileSourcesMap.put(name, file.getAbsolutePath());
-                }
-                /*
-                 * add also geopackage tables
-                 */
-                try {
-                    List<SpatialRasterTable> spatialRasterTables = SpatialDatabasesManager.getInstance().getSpatialRasterTables(
-                            false);
-                    for( SpatialRasterTable table : spatialRasterTables ) {
-                        tileSourcesMap.put(i++, table.getTableName());
-                        rasterSourcesMap.put(table.getTableName(), table);
-                    }
-                } catch (jsqlite.Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        } catch (Exception e1) {
-            e1.printStackTrace();
+            handleTileSources();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+        Collections.sort(tileSourcesList, new Comparator<String>(){
+            public int compare( String o1, String o2 ) {
+                return o1.compareToIgnoreCase(o2);
+            }
+        });
 
         checkIncomingGeosms();
         checkIncomingSmsData();
 
+    }
+
+    private void checkMockLocations() {
+        /*
+         * check mock locations availability
+         */
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isMockMode = preferences.getBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, false);
+        if (isMockMode) {
+            if (!TestMock.isMockEnabled(getContentResolver())) {
+                Utilities
+                        .messageDialog(
+                                this,
+                                "To use the demo mode you need to enable Androids mock locations in the developer settings. Disabling demo mode.",
+                                null);
+                Editor edit = preferences.edit();
+                edit.putBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, false);
+                edit.commit();
+            }
+        }
+
+    }
+
+    private void handleTileSources() throws Exception, IOException, FileNotFoundException {
+        fileSourcesMap = new HashMap<String, String>();
+        rasterSourcesMap = new HashMap<String, SpatialRasterTable>();
+
+        tileSourcesList = new ArrayList<String>();
+        File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
+        if (mapsDir != null && mapsDir.exists()) {
+            String s_extention = ".mapurl";
+            List<File> search_files = new ArrayList<File>();
+            FileUtilities.searchDirectoryRecursive(mapsDir, s_extention, search_files);
+            Collections.sort(search_files);
+            for( File file : search_files ) {
+                String name = FileUtilities.getNameWithoutExtention(file);
+                if (!ignoreTileSource(name)) {
+                    tileSourcesList.add(name);
+                    fileSourcesMap.put(name, file.getAbsolutePath());
+                }
+            }
+            search_files.clear();
+            s_extention = ".map";
+            FileUtilities.searchDirectoryRecursive(mapsDir, s_extention, search_files);
+            Collections.sort(search_files);
+            for( File file : search_files ) {
+                String name = FileUtilities.getNameWithoutExtention(file);
+                if (!ignoreTileSource(name)) {
+                    tileSourcesList.add(name);
+                    fileSourcesMap.put(name, file.getAbsolutePath());
+                }
+            }
+            /*
+             * add also geopackage tables
+             */
+            try {
+                List<SpatialRasterTable> spatialRasterTables = SpatialDatabasesManager.getInstance()
+                        .getSpatialRasterTables(false);
+                for( SpatialRasterTable table : spatialRasterTables ) {
+                    String name = table.getTableName();
+                    if (!ignoreTileSource(name)) {
+                        tileSourcesList.add(name);
+                        rasterSourcesMap.put(name, table);
+                    }
+                }
+            } catch (jsqlite.Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        /*
+         * if they do not exist add two mbtiles based mapnik and opencycle
+         * tile sources as default ones. They will automatically
+         * be backed into a mbtiles db.
+         */
+        if (mapsDir != null && mapsDir.exists()) {
+            AssetManager assetManager = this.getAssets();
+            File mapnikFile = new File(mapsDir, "mapnik.mapurl");
+            if (!mapnikFile.exists()) {
+                InputStream inputStream = assetManager.open("tilesources/mapnik.mapurl");
+                OutputStream outputStream = new FileOutputStream(mapnikFile);
+                FileUtilities.copyFile(inputStream, outputStream);
+                tileSourcesList.add("mapnik");
+                fileSourcesMap.put("mapnik", mapnikFile.getAbsolutePath());
+            }
+            File opencycleFile = new File(mapsDir, "opencycle.mapurl");
+            if (!opencycleFile.exists()) {
+                InputStream inputStream = assetManager.open("tilesources/opencycle.mapurl");
+                FileOutputStream outputStream = new FileOutputStream(opencycleFile);
+                FileUtilities.copyFile(inputStream, outputStream);
+                tileSourcesList.add("opencycle");
+                fileSourcesMap.put("opencycle", opencycleFile.getAbsolutePath());
+            }
+        }
+    }
+    private boolean ignoreTileSource( String name ) {
+        if (name.startsWith("_")) {
+            return true;
+        }
+        return false;
     }
 
     @SuppressWarnings("nls")
@@ -177,7 +259,15 @@ public class GeoPaparazziActivity extends Activity {
                             String[] split = pParameter.split(",");
                             double lat = Double.parseDouble(split[0]);
                             double lon = Double.parseDouble(split[1]);
-                            DaoBookmarks.addBookmark(lon, lat, "GeoSMS position", 16, -1, -1, -1, -1);
+
+                            String msg = "GeoSMS position";
+                            String pathTrim = path.trim();
+                            int firstSPaceIndex = pathTrim.indexOf(' ');
+                            if (firstSPaceIndex != -1) {
+                                msg = pathTrim.substring(0, firstSPaceIndex);
+                            }
+
+                            DaoBookmarks.addBookmark(lon, lat, msg, 16, -1, -1, -1, -1);
                             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
                             PositionUtilities.putMapCenterInPreferences(preferences, lon, lat, 16);
                             Intent mapIntent = new Intent(this, MapsActivity.class);
@@ -191,7 +281,7 @@ public class GeoPaparazziActivity extends Activity {
                 Utilities
                         .messageDialog(
                                 this,
-                                "Could not open the passed URI. Geo-Droid is able to open only GeoSMS URIs that contain a part like: ...&q=46.068941,11.169849&GeoSMS ",
+                                "Could not open the passed URI. Geopaparazzi is able to open only GeoSMS URIs that contain a part like: ...&q=46.068941,11.169849&GeoSMS ",
                                 null);
             }
         }
@@ -200,7 +290,7 @@ public class GeoPaparazziActivity extends Activity {
     private void checkIncomingSmsData() {
         /*
          * check if it was opened for a link of the kind
-         * 
+         *
          * http://maps.google.com/maps?q=46.068941,11.169849&GeoSMS
          */
         Uri data = getIntent().getData();
@@ -230,12 +320,12 @@ public class GeoPaparazziActivity extends Activity {
                         }
 
                         Utilities.messageDialog(this, MessageFormat.format(
-                                getString(eu.hydrologis.geodroid.R.string.imported_notes_and_bookmarks), notesNum,
+                                getString(eu.hydrologis.geopaparazzi.R.string.imported_notes_and_bookmarks), notesNum,
                                 bookmarksNum), null);
                     }
                 }
             } catch (Exception e) {
-                Utilities.messageDialog(this, getString(eu.hydrologis.geodroid.R.string.could_not_open_sms), null);
+                Utilities.messageDialog(this, getString(eu.hydrologis.geopaparazzi.R.string.could_not_open_sms), null);
             }
         }
     }
@@ -269,7 +359,7 @@ public class GeoPaparazziActivity extends Activity {
 
         if (resourcesManager == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(eu.hydrologis.geodroid.R.string.no_sdcard_use_internal_memory).setCancelable(false)
+            builder.setMessage(eu.hydrologis.geopaparazzi.R.string.no_sdcard_use_internal_memory).setCancelable(false)
                     .setPositiveButton(this.getString(android.R.string.yes), new DialogInterface.OnClickListener(){
                         public void onClick( DialogInterface dialog, int id ) {
                             ResourcesManager.setUseInternalMemory(true);
@@ -393,27 +483,27 @@ public class GeoPaparazziActivity extends Activity {
             }
         });
 
-//        // panic buttons part
-//        final int panicButtonId = R.id.panicbutton;
-//        Button panicButton = (Button) findViewById(panicButtonId);
-//        panicButton.setOnClickListener(new Button.OnClickListener(){
-//            public void onClick( View v ) {
-//                push(panicButtonId, v);
-//            }
-//        });
-//        final int statusUpdateButtonId = R.id.statusupdatebutton;
-//        Button statusUpdateButton = (Button) findViewById(statusUpdateButtonId);
-//        statusUpdateButton.setOnClickListener(new Button.OnClickListener(){
-//            public void onClick( View v ) {
-//                push(statusUpdateButtonId, v);
-//            }
-//        });
+        // panic buttons part
+        final int panicButtonId = R.id.panicbutton;
+        Button panicButton = (Button) findViewById(panicButtonId);
+        panicButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                push(panicButtonId, v);
+            }
+        });
+        final int statusUpdateButtonId = R.id.statusupdatebutton;
+        Button statusUpdateButton = (Button) findViewById(statusUpdateButtonId);
+        statusUpdateButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                push(statusUpdateButtonId, v);
+            }
+        });
 
         boolean doOsmPref = preferences.getBoolean(Constants.PREFS_KEY_DOOSM, false);
         if (doOsmPref)
             OsmUtilities.handleOsmTagsDownload(this);
 
-        Utilities.toast(this, getString(eu.hydrologis.geodroid.R.string.loaded_project_in)
+        Utilities.toast(this, getString(eu.hydrologis.geopaparazzi.R.string.loaded_project_in)
                 + resourcesManager.getApplicationDir().getAbsolutePath(), Toast.LENGTH_LONG);
 
         // check for screen on
@@ -426,13 +516,31 @@ public class GeoPaparazziActivity extends Activity {
     public void push( int id, View v ) {
         switch( id ) {
         case R.id.dashboard_note_item_button: {
-            QuickAction qa = new QuickAction(v);
-            qa.addActionItem(QuickActionsFactory.INSTANCE.getNotesQuickAction(qa, this, RETURNCODE_NOTES));
-            qa.addActionItem(QuickActionsFactory.INSTANCE.getPicturesQuickAction(qa, this, RETURNCODE_PICS));
-            qa.addActionItem(QuickActionsFactory.INSTANCE.getAudioQuickAction(qa, this, resourcesManager.getMediaDir()));
-            qa.addActionItem(QuickActionsFactory.INSTANCE.getSketchQuickAction(qa, this, RETURNCODE_SKETCH));
-            qa.setAnimStyle(QuickAction.ANIM_AUTO);
-            qa.show();
+            boolean isValid = false;
+            if (GpsManager.getInstance(this).hasFix()) {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
+                if (gpsLocation != null) {
+                    try {
+                        // File mediaDir = ResourcesManager.getInstance(this).getMediaDir();
+                        // final File tmpImageFile = new File(mediaDir.getParentFile(),
+                        // LibraryConstants.TMPPNGIMAGENAME);
+                        Intent mapTagsIntent = new Intent(this, MapTagsActivity.class);
+                        // mapTagsIntent.putExtra(LibraryConstants.LATITUDE, gpsLocation[1]);
+                        // mapTagsIntent.putExtra(LibraryConstants.LONGITUDE, gpsLocation[0]);
+                        // mapTagsIntent.putExtra(LibraryConstants.ELEVATION, gpsLocation[2]);
+                        // mapTagsIntent.putExtra(LibraryConstants.TMPPNGIMAGENAME,
+                        // tmpImageFile.getAbsolutePath());
+                        startActivity(mapTagsIntent);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    isValid = true;
+                }
+            }
+            if (!isValid)
+                Utilities.messageDialog(this, R.string.gpslogging_only, null);
+
             break;
         }
         case R.id.dashboard_undonote_item_button: {
@@ -484,14 +592,14 @@ public class GeoPaparazziActivity extends Activity {
             startActivity(exportIntent);
             break;
         }
-//        case R.id.panicbutton: {
-//            sendPosition(true);
-//            break;
-//        }
-//        case R.id.statusupdatebutton: {
-//            sendPosition(false);
-//            break;
-//        }
+        case R.id.panicbutton: {
+            sendPosition(true);
+            break;
+        }
+        case R.id.statusupdatebutton: {
+            sendPosition(false);
+            break;
+        }
         default:
             break;
         }
@@ -505,9 +613,9 @@ public class GeoPaparazziActivity extends Activity {
         final SubMenu subMenu = menu.addSubMenu(Menu.NONE, MENU_TILE_SOURCE_ID, 1, R.string.mapsactivity_menu_tilesource)
                 .setIcon(R.drawable.ic_menu_tilesource);
         {
-            Set<Entry<Integer, String>> entrySet = tileSourcesMap.entrySet();
-            for( Entry<Integer, String> entry : entrySet ) {
-                subMenu.add(0, entry.getKey(), Menu.NONE, entry.getValue());
+            int index = 1000;
+            for( String entry : tileSourcesList ) {
+                subMenu.add(0, index++, Menu.NONE, entry);
             }
         }
         menu.add(Menu.NONE, MENU_RESET, 2, R.string.reset).setIcon(android.R.drawable.ic_menu_revert);
@@ -522,7 +630,7 @@ public class GeoPaparazziActivity extends Activity {
         switch( item.getItemId() ) {
         case MENU_ABOUT:
             Intent intent = new Intent(this, AboutActivity.class);
-            intent.putExtra(LibraryConstants.PREFS_KEY_TEXT, "eu.hydrologis.geodroid"); //$NON-NLS-1$
+            intent.putExtra(LibraryConstants.PREFS_KEY_TEXT, "eu.hydrologis.geopaparazzi"); //$NON-NLS-1$
             startActivity(intent);
             return true;
         case MENU_SETTINGS:
@@ -546,115 +654,44 @@ public class GeoPaparazziActivity extends Activity {
             return true;
         default: {
             String name = item.getTitle().toString();
-            MapGeneratorInternal mapGeneratorInternalNew = null;
-            try {
-                mapGeneratorInternalNew = MapGeneratorInternal.valueOf(name);
-            } catch (IllegalArgumentException e) {
-                // ignore, is custom
-            }
-            if (mapGeneratorInternalNew != null) {
-                if (mapGeneratorInternalNew.equals(MapGeneratorInternal.DATABASE_RENDERER)) {
-                    // check existing maps and ask for which to load
-                    File mapsDir = null;
-                    try {
-                        mapsDir = ResourcesManager.getInstance(this).getMapsDir();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    if (mapsDir == null || !mapsDir.exists()) {
-                        Utilities.messageDialog(this, eu.hydrologis.geodroid.R.string.no_external_sdcard_for_db_renderer,
-                                null);
-                        return true;
-                    }
-
-                    final List<String> mapPaths = new ArrayList<String>();
-                    final List<String> mapNames = new ArrayList<String>();
-
-                    File[] mapFiles = mapsDir.listFiles(new FilenameFilter(){
-                        public boolean accept( File dir, String filename ) {
-                            return filename.endsWith(".map"); //$NON-NLS-1$
-                        }
-                    });
-
-                    if (mapFiles == null || mapFiles.length == 0) {
-                        Utilities.messageDialog(this, eu.hydrologis.geodroid.R.string.no_map_files_found_go_online, null);
-                        return true;
-                    }
-
-                    for( File mapFile : mapFiles ) {
-                        mapPaths.add(mapFile.getAbsolutePath());
-                        mapNames.add(FileUtilities.getNameWithoutExtention(mapFile));
-                    }
-
-                    String[] mapNamesArrays = mapNames.toArray(new String[0]);
-                    boolean[] mapNamesChecked = new boolean[mapNamesArrays.length];
-                    DialogInterface.OnMultiChoiceClickListener dialogListener = new DialogInterface.OnMultiChoiceClickListener(){
-                        public void onClick( DialogInterface dialog, int which, boolean isChecked ) {
-                            String mapPath = mapPaths.get(which);
-                            setTileSource(MapGeneratorInternal.DATABASE_RENDERER.toString(), new File(mapPath));
-                            mapChoiceDialog.dismiss();
-                        }
-                    };
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle(eu.hydrologis.geodroid.R.string.select_map_to_use);
-                    builder.setMultiChoiceItems(mapNamesArrays, mapNamesChecked, dialogListener);
-                    mapChoiceDialog = builder.create();
-                    mapChoiceDialog.show();
-                } else {
-                    setTileSource(mapGeneratorInternalNew.toString(), null);
-                }
+            // MapGeneratorInternal mapGeneratorInternalNew = null;
+            // try {
+            // mapGeneratorInternalNew = MapGeneratorInternal.valueOf(name);
+            // } catch (IllegalArgumentException e) {
+            // // ignore, is custom
+            // }
+            // if (mapGeneratorInternalNew != null) {
+            // setTileSource(mapGeneratorInternalNew.toString(), null);
+            // } else {
+            String fileSource = fileSourcesMap.get(name);
+            if (fileSource != null) {
+                setTileSource(null, new File(fileSource));
             } else {
-
-                String fileSource = fileSourcesMap.get(name);
-                if (fileSource != null) {
-                    setTileSource(null, new File(fileSource));
-                } else {
-                    // try raster
-                    SpatialRasterTable spatialRasterTable = rasterSourcesMap.get(name);
-                    if (spatialRasterTable != null) {
-                        setTileSource(spatialRasterTable);
-                    }
+                // try raster
+                SpatialRasterTable spatialRasterTable = rasterSourcesMap.get(name);
+                if (spatialRasterTable != null) {
+                    setTileSource(spatialRasterTable);
                 }
-
             }
+
+            // }
         }
         }
         return super.onMenuItemSelected(featureId, item);
     }
-
     /**
      * Sets the tilesource.
-     * 
+     *
      * <p>
      * If both arguments are set null, it will try to get info from the preferences,
      * and used sources are saved into preferences.
      * </p>
-     * 
+     *
      * @param sourceName if source is <code>null</code>, mapnik is used.
-     * @param mapfile the map file to use in case it is a database based source. 
+     * @param mapfile the map file to use in case it is a database based source.
      */
     private void setTileSource( String sourceName, File mapfile ) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        MapGeneratorInternal mapGeneratorInternal = MapGeneratorInternal.MAPNIK;
-        if (sourceName != null) {
-            mapGeneratorInternal = MapGeneratorInternal.valueOf(sourceName);
-
-            if (mapGeneratorInternal.equals(MapGeneratorInternal.DATABASE_RENDERER)) {
-                if (mapfile == null || !mapfile.exists()) {
-                    // try from preferences
-                    String filePath = preferences.getString(Constants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
-                    mapfile = new File(filePath);
-                    if (!mapfile.exists()) {
-                        mapGeneratorInternal = MapGeneratorInternal.MAPNIK;
-                        Utilities
-                                .messageDialog(this, eu.hydrologis.geodroid.R.string.no_map_file_found_going_to_mapnik, null);
-                        mapfile = null;
-                    }
-                }
-            }
-        }
-
         Editor editor = preferences.edit();
         editor.putString(Constants.PREFS_KEY_TILESOURCE, sourceName);
         if (mapfile != null)
@@ -901,35 +938,5 @@ public class GeoPaparazziActivity extends Activity {
     public Object onRetainNonConfigurationInstance() {
         return resourcesManager;
     }
-
-    /**
-     * Send the panic or status update message.
-     */
-//    @SuppressWarnings("nls")
-//    private void sendPosition( boolean isPanic ) {
-//        if (isPanic) {
-//            String lastPosition = getString(R.string.help_needed);
-//            String[] panicNumbers = GpUtilities.getPanicNumbers(this);
-//            if (panicNumbers == null) {
-//                String positionText = SmsUtilities.createPositionText(this, lastPosition);
-//                SmsUtilities.sendSMSViaApp(this, "", positionText);
-//            } else {
-//                for( String number : panicNumbers ) {
-//                    number = number.trim();
-//                    if (number.length() == 0) {
-//                        continue;
-//                    }
-//
-//                    String positionText = SmsUtilities.createPositionText(this, lastPosition);
-//                    SmsUtilities.sendSMS(this, number, positionText, true);
-//                }
-//            }
-//        } else {
-//            // just sending a single geosms
-//            String positionText = SmsUtilities.createPositionText(this, "");
-//            SmsUtilities.sendSMSViaApp(this, "", positionText);
-//        }
-
-//    }
 
 }
