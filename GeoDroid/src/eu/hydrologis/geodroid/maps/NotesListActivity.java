@@ -45,6 +45,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.FormActivity;
+import eu.geopaparazzi.library.forms.FormUtilities;
+import eu.geodroid.library.share.ShareUtilities;
 import eu.geodroid.library.util.LibraryConstants;
 import eu.geodroid.library.util.ResourcesManager;
 import eu.geodroid.library.util.Utilities;
@@ -62,6 +64,7 @@ import eu.hydrologis.geodroid.R;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class NotesListActivity extends ListActivity {
+    private static final String SHARE_NOTE_WITH = "Share note with...";
     private String[] notesNames;
     private Map<String, INote> notesMap = new HashMap<String, INote>();
     private Comparator<INote> notesSorter = new ItemComparators.NotesComparator(false);
