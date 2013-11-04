@@ -1,21 +1,7 @@
-/*
- * Geopaparazzi - Digital field mapping on Android based devices
- * Copyright (C) 2010  HydroloGIS (www.hydrologis.com)
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package eu.geopaparazzi.library.forms;
+
+import java.io.File;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -435,4 +421,74 @@ public class FormUtilities {
 
     }
 
+/**
+     * Transforms a form content to its plain text representation.
+     * 
+     * <p>Media are inserted as the file name.</p>
+     * 
+     * @param section the json form.
+     * @param withTitles if <code>true</code>, all the section titles are added.
+     * @return the plain text representation of the form.
+     * @throws Exception 
+     */
+    public static String formToPlainText( String section, boolean withTitles ) throws Exception {
+
+        StringBuilder sB = new StringBuilder();
+        JSONObject sectionObject = new JSONObject(section);
+        if (withTitles) {
+            if (sectionObject.has(FormUtilities.ATTR_SECTIONNAME)) {
+                String sectionName = sectionObject.getString(FormUtilities.ATTR_SECTIONNAME);
+                sB.append(sectionName).append("\n");
+                for( int i = 0; i < sectionName.length(); i++ ) {
+                    sB.append("=");
+                }
+                sB.append("\n");
+            }
+        }
+
+        List<String> formsNames = TagsManager.getFormNames4Section(sectionObject);
+        for( String formName : formsNames ) {
+            if (withTitles) {
+                sB.append(formName).append("\n");
+                for( int i = 0; i < formName.length(); i++ ) {
+                    sB.append("-").append("-");
+                }
+                sB.append("\n");
+            }
+            JSONObject form4Name = TagsManager.getForm4Name(formName, sectionObject);
+            JSONArray formItems = TagsManager.getFormItems(form4Name);
+            for( int i = 0; i < formItems.length(); i++ ) {
+                JSONObject formItem = formItems.getJSONObject(i);
+                if (!formItem.has(FormUtilities.TAG_KEY)) {
+                    continue;
+                }
+
+                String type = formItem.getString(FormUtilities.TAG_TYPE);
+                String key = formItem.getString(FormUtilities.TAG_KEY);
+                String value = formItem.getString(FormUtilities.TAG_VALUE);
+
+                if (type.equals(FormUtilities.TYPE_PICTURES) || type.equals(FormUtilities.TYPE_MAP)
+                        || type.equals(FormUtilities.TYPE_SKETCH)) {
+                    if (value.trim().length() == 0) {
+                        continue;
+                    }
+                    String[] imageSplit = value.split(";");
+                    for( String image : imageSplit ) {
+                        File imgFile = new File(image);
+                        String imgName = imgFile.getName();
+                        sB.append(key).append(": ");
+                        sB.append(imgName);
+                        sB.append("\n");
+                    }
+                } else {
+                    sB.append(key).append(": ");
+                    sB.append(value);
+                    sB.append("\n");
+                }
+            }
+        }
+        return sB.toString();
+    }
+
 }
+
